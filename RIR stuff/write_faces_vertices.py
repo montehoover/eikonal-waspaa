@@ -33,15 +33,20 @@ def read_mesh_from_file(filename):
 
 
 def write_mesh_to_dat_files(mesh, F_filename="Faces.dat", V_filename="Vertices.dat"):
+    #  If it's in 0-based indexing (which it probably is), convert to 1-based indexing
+    # for use in Fortran-based BEM solver
+    if 0 in mesh.F:
+        mesh.F = mesh.F + 1
+    
     with open(F_filename, 'w') as f:
         f.write(f"{mesh.n_faces:10d}\n")
         for v1, v2, v3 in mesh.F.astype(int):
             f.write(f"{v1:10d} {v2:11d} {v3:11d}\n")
+
     with open(V_filename, 'w') as f:
         f.write(f"{mesh.n_vertices:10d}\n")
         for x, y, z in mesh.V.astype(float):
             f.write(f"{x:30.18f} {y:30.18f} {z:30.18f}\n")
-
 
 
 def get_mesh_files():
